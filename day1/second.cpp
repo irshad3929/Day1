@@ -20,6 +20,7 @@ class Invertor {
 protected:
     int powerRating;
 public:
+    Invertor() {}
     int calculatePowerRating(int current, int operatingVoltage) {
         return current * operatingVoltage;
     }
@@ -48,26 +49,25 @@ public:
     REGALIA() : SolarInvertor(true, true) {} // REGALIA has both battery and grid feature
 };
 
-class ZELIO : public Invertor {
+// Non-solar invertor has Is-A relation with inverter so inheritance follow
+class NonSolarInverter : public Invertor{   //it define non solar class (zelio, icruze)
+   Battery battery;
 public:
-    Battery* battery;
-    ZELIO() {
-        Invertor();
-        battery->hasBattery = true; 
-        cout<< "ZELIO has battery feature"<<endl;   // ZELIO has battery by default
-    }                                     
+   NonSolarInverter(bool isBattery) : battery(isBattery) {}
 };
 
-
-
-class ICRUZE : public Invertor {
+class ZELIO : public NonSolarInverter {
 public:
-    Battery* battery;
-    ICRUZE() {
-        Invertor();
-        battery->hasBattery = true; 
-        cout<< "ZELIO has battery feature"<<endl;  // ICRUZE also has battery by default
-    } 
+       ZELIO() : NonSolarInverter(true) {} 
+   
+         // ZELIO has battery by default                                     
+};
+
+class ICRUZE : public NonSolarInverter {
+public:
+       ICRUZE() : NonSolarInverter(true) {} 
+       
+         // ICRUZE has battery by default                                     
 };
 
 class Company {
@@ -77,21 +77,21 @@ public:
     Company(Invertor* invertor) : invertor(invertor) {}
     
    void getInfo(){
-       cout<<"power rating "<< invertor->calculatePowerRating(10,24);
+       cout<<"power rating "<< invertor->calculatePowerRating(5,24);
     }
 };
 
 int main() {
     // Create invertor objects
     // auto pcu = new PCU();
-     auto regalia = new REGALIA();
+    // auto regalia = new REGALIA();
     //auto gti = new GTI();
-    //auto zelio = new ZELIO();
+    auto zelio = new ZELIO();
     // ICRUZE icruze;
 
     // Create a company with an invertor
    // auto company = new Company(gti);
-    auto company = new Company(regalia);
+    auto company = new Company(zelio);
     company->getInfo();
     
     // Company company(&pcu);

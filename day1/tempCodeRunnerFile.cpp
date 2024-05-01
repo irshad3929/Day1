@@ -1,0 +1,1 @@
+cout<<"ZELIO has battery by default"<<endl;
